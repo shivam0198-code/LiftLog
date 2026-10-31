@@ -35,6 +35,7 @@ class WorkoutWorkerService : Service() {
     private val binder = LocalBinder()
 
     private lateinit var notificationManager: WorkoutNotificationManager
+    private lateinit var wearableSyncManager: expo.modules.workoutworker.wear.WearableSyncManager
 
     private var eventDispatch: ((type: String, event: WorkoutMessage) -> Unit) =
         { _: String, _: WorkoutMessage -> }
@@ -66,6 +67,7 @@ class WorkoutWorkerService : Service() {
         Log.d("WorkoutWorker", "Service created")
 
         notificationManager = WorkoutNotificationManager(this)
+        wearableSyncManager = expo.modules.workoutworker.wear.WearableSyncManager(this)
 
         ContextCompat.registerReceiver(
             this,
@@ -110,6 +112,7 @@ class WorkoutWorkerService : Service() {
     }
 
     private suspend fun dispatchToHandlers(event: WorkoutMessage) {
+        wearableSyncManager.syncWorkoutState(event)
         for (handler in handlers) {
             if (handler.canHandle(event)) {
                 handler.handle(event, eventDispatch)

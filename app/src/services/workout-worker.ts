@@ -1,7 +1,17 @@
-import { AppConfiguration, Translations, WorkoutMessage } from '@/models/workout-worker-messages';
+import {
+  AdjustRestTimerCommand,
+  AppConfiguration,
+  CompleteSetCommand,
+  SkipRestTimerCommand,
+  Translations,
+  WorkoutMessage,
+} from '@/models/workout-worker-messages';
 import WorkoutWorkerModule from '~/modules/workout-worker/src/WorkoutWorkerModule';
 import { RootState } from '@/store';
-import { selectActiveSessionId, sessionFinished } from '@/store/stored-sessions';
+import { selectActiveSessionId, sessionFinished, updateStoredSession } from '@/store/stored-sessions';
+import { RecordedCardioExercise, RecordedWeightedExercise, RestTimer } from '@/models/session-models';
+import { Weight } from '@/models/weight';
+import { Duration, OffsetDateTime } from '@js-joda/core';
 import { Dispatch } from '@reduxjs/toolkit';
 import { TolgeeInstance, TranslationKey } from '@tolgee/react';
 
@@ -20,6 +30,9 @@ export class WorkoutWorker {
     });
 
     this.on('FinishWorkoutCommand', () => this.handleFinishWorkout());
+    this.on<CompleteSetCommand>('CompleteSetCommand', (e) => this.handleCompleteSet(e));
+    this.on<SkipRestTimerCommand>('SkipRestTimerCommand', () => this.handleSkipRestTimer());
+    this.on<AdjustRestTimerCommand>('AdjustRestTimerCommand', (e) => this.handleAdjustRestTimer(e));
   }
 
   broadcast(event: WorkoutMessage['payload']) {
@@ -43,6 +56,85 @@ export class WorkoutWorker {
     if (activeSessionId) {
       this.dispatch(sessionFinished(activeSessionId));
     }
+  }
+
+  private handleCompleteSet(command: CompleteSetCommand) {
+    const activeSessionId = selectActiveSessionId(this.getState());
+    if (!activeSessionId) {
+      return;
+    }
+
+    this.dispatch(
+      updateStoredSession({
+        sessionId: activeSessionId,
+        update: (s) => {
+          const ex = s.recordedExercises[command.exerciseIndex];
+          if (!ex) {
+            return s;
+          }
+
+          const now = OffsetDateTime.now();
+          if (ex instanceof RecordedWeightedExercise) {
+            let updatedEx = ex;
+            if (command.weight !== undefined) {
+              const weightVal = Weight.fromJSON(command.weight);
+              updatedEx = updatedEx.withWeight(command.setIndex, weightVal, 'thisSet');
+            }
+            const reps = command.reps ?? updatedEx.repsTargetForSet(command.setIndex).max;
+            updatedEx = updatedEx.withRepCount(command.setIndex, reps, now);
+            const updatedSession = s.withExercise(command.exerciseIndex, updatedEx);
+            return updatedSession.with({ restTimer: new RestTimer(updatedSession.lastExercise?.latestTime ?? now) });
+          } else if (ex instanceof RecordedCardioExercise) {
+            const before = s.cardioSetAt(command.exerciseIndex, command.setIndex);
+            const updated = s.withCardioSet(
+              command.exerciseIndex,
+              command.setIndex,
+              (set) => set.with({ completionDateTime: now }),
+              now,
+            );
+            return updated.cardioSetAt(command.exerciseIndex, command.setIndex)?.earnsRest(before)
+              ? updated.with({ restTimer: new RestTimer(updated.lastExercise?.latestTime ?? now) })
+              : updated;
+          }
+          return s;
+        },
+      }),
+    );
+  }
+
+  private handleSkipRestTimer() {
+    const activeSessionId = selectActiveSessionId(this.getState());
+    if (!activeSessionId) {
+      return;
+    }
+
+    this.dispatch(
+      updateStoredSession({
+        sessionId: activeSessionId,
+        update: (s) => s.with({ restTimer: undefined }),
+      }),
+    );
+  }
+
+  private handleAdjustRestTimer(command: AdjustRestTimerCommand) {
+    const activeSessionId = selectActiveSessionId(this.getState());
+    if (!activeSessionId) {
+      return;
+    }
+
+    this.dispatch(
+      updateStoredSession({
+        sessionId: activeSessionId,
+        update: (s) => {
+          if (!s.restTimer) {
+            return s;
+          }
+          // Adding deltaSeconds adds to remaining rest, so startedAt moves back
+          const newStartedAt = s.restTimer.startedAt.plus(Duration.ofSeconds(-command.deltaSeconds));
+          return s.with({ restTimer: new RestTimer(newStartedAt, s.restTimer.pausedAt) });
+        },
+      }),
+    );
   }
 
   private on<T extends WorkoutMessage['payload']>(type: T['type'], eventHandler: (e: T) => void) {

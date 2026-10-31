@@ -13,13 +13,58 @@ export type WorkoutMessagePayload =
   | WorkoutStartedEvent
   | WorkoutUpdatedEvent
   | WorkoutEndedEvent
-  | FinishWorkoutCommand;
+  | FinishWorkoutCommand
+  | CompleteSetCommand
+  | SkipRestTimerCommand
+  | AdjustRestTimerCommand
+  | NavigateSetCommand;
 
 export type WorkoutMessage = {
   translations: Translations;
   appConfiguration: AppConfiguration;
   payload: WorkoutMessagePayload;
 };
+
+export interface CompleteSetCommand {
+  type: 'CompleteSetCommand';
+  /**
+   * @asType integer
+   */
+  exerciseIndex: number;
+  /**
+   * @asType integer
+   */
+  setIndex: number;
+  weight?: WeightJSON;
+  /**
+   * @asType integer
+   */
+  reps?: number;
+}
+
+export interface SkipRestTimerCommand {
+  type: 'SkipRestTimerCommand';
+}
+
+export interface AdjustRestTimerCommand {
+  type: 'AdjustRestTimerCommand';
+  /**
+   * @asType integer
+   */
+  deltaSeconds: number;
+}
+
+export interface NavigateSetCommand {
+  type: 'NavigateSetCommand';
+  /**
+   * @asType integer
+   */
+  exerciseIndex: number;
+  /**
+   * @asType integer
+   */
+  setIndex: number;
+}
 
 export interface WorkoutStartedEvent {
   type: 'WorkoutStartedEvent';

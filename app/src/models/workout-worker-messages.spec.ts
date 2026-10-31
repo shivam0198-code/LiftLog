@@ -290,6 +290,27 @@ describe('WorkoutMessage JSON schema validation', () => {
       expect(validate('WorkoutMessage', message)).toBe(true);
     });
 
+    it('validates a full WorkoutMessage wrapping CompleteSetCommand', () => {
+      const message = wrapMessage({
+        type: 'CompleteSetCommand',
+        exerciseIndex: 0,
+        setIndex: 1,
+        weight: new Weight(80, 'kilograms').toJSON(),
+        reps: 8,
+      });
+      expect(validate('WorkoutMessage', message)).toBe(true);
+    });
+
+    it('validates a full WorkoutMessage wrapping SkipRestTimerCommand', () => {
+      const message = wrapMessage({ type: 'SkipRestTimerCommand' });
+      expect(validate('WorkoutMessage', message)).toBe(true);
+    });
+
+    it('validates a full WorkoutMessage wrapping AdjustRestTimerCommand', () => {
+      const message = wrapMessage({ type: 'AdjustRestTimerCommand', deltaSeconds: 30 });
+      expect(validate('WorkoutMessage', message)).toBe(true);
+    });
+
     it('validates a full WorkoutMessage wrapping WorkoutUpdatedEvent', () => {
       const session = makeSession();
       const message = wrapMessage({

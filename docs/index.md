@@ -16,6 +16,8 @@ work to find the docs relevant to your area, and update it whenever you add, rem
 - [WorkoutWorker.md](./WorkoutWorker.md) - the platform-specific, message-driven execution environment
   for an in-progress workout (persistent notifications, background timers, system UI). Redux stays the
   source of truth; the worker is disposable.
+- [WearOsCompanion.md](./WearOsCompanion.md) - the Wear OS companion app architecture: glanceable active set HUD,
+  circular rest timer countdown with haptics, rotary bezel control, and Google Play Services Wearable Data Layer sync.
 
 ## Features
 

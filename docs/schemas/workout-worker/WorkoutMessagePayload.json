@@ -19,6 +19,18 @@
     },
     {
       "$ref": "./FinishWorkoutCommand.json"
+    },
+    {
+      "$ref": "./CompleteSetCommand.json"
+    },
+    {
+      "$ref": "./SkipRestTimerCommand.json"
+    },
+    {
+      "$ref": "./AdjustRestTimerCommand.json"
+    },
+    {
+      "$ref": "./NavigateSetCommand.json"
     }
   ]
 }
