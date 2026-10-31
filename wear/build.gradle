@@ -1,7 +1,16 @@
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.6.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
+    }
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     namespace 'com.limajuice.liftlog.wear'
@@ -17,8 +26,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -45,7 +53,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.11'
+        kotlinCompilerExtensionVersion '1.5.14'
     }
 
     packagingOptions {
@@ -71,13 +79,6 @@ dependencies {
     // Google Play Services Wearable
     implementation 'com.google.android.gms:play-services-wearable:19.0.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0'
-
-    // Horologist (Rotary Crown, Layout, Audio/Haptics)
-    def horologist_version = '0.6.14'
-    implementation "com.google.android.horologist:horologist-compose-layout:$horologist_version"
-
-    // Health Services (Live Heart Rate)
-    implementation 'androidx.health.services:health-services-client:1.0.0-rc01'
 
     // JSON serialization
     implementation 'com.squareup.moshi:moshi:1.15.2'

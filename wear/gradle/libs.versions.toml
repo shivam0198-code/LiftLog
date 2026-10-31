@@ -1,0 +1,67 @@
+[versions]
+agp = "9.3.1"
+kotlinComposePlugin = "2.4.10"
+ksp = "2.3.10"
+coreKtx = "1.19.0"
+splashscreen = "1.2.0"
+lifecycle = "2.11.0"
+activityCompose = "1.13.0"
+fragmentCompose = "1.8.9"
+composeBom = "2026.06.01"
+readium = "3.3.0"
+room = "2.8.4"
+coil = "3.5.0"
+documentfile = "1.1.0"
+datastore = "1.2.1"
+okhttp = "5.4.0"
+work = "2.11.2"
+desugar = "2.1.5"
+json = "20260719"
+coroutines = "1.11.0"
+reorderable = "3.1.0"
+robolectric = "4.16.1"
+junit = "4.13.2"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragmentCompose" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+readium-shared = { module = "org.readium.kotlin-toolkit:readium-shared", version.ref = "readium" }
+readium-streamer = { module = "org.readium.kotlin-toolkit:readium-streamer", version.ref = "readium" }
+readium-navigator = { module = "org.readium.kotlin-toolkit:readium-navigator", version.ref = "readium" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+androidx-test-core = { module = "androidx.test:core", version = "1.7.0" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-media = { module = "androidx.media:media", version = "1.7.0" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
+json = { module = "org.json:json", version.ref = "json" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+junit = { module = "junit:junit", version.ref = "junit" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver3-junit4", version.ref = "okhttp" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinComposePlugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
